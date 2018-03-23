@@ -43,11 +43,22 @@ func ExtractRecordDatas(target []byte) ([][]byte, error) {
 	}
 
 	records := aggregated.GetRecords()
-	recordNum := len(records)
 	recordDatas := [][]byte{{}}
-	for index := 0; index < recordNum; index++ {
-		recordDatas[index] = records[index].GetData()[:]
+	for index := 0; index < len(records); index++ {
+		recordDatas[index] = records[index].GetData()
 	}
 
 	return recordDatas, nil
+}
+
+// Unmarshal extracts AggregatedRecord from Kinesis Aggregated Record.
+func Unmarshal(target []byte) (*pb.AggregatedRecord, error) {
+	length := int32(len(target))
+	aggregated := &pb.AggregatedRecord{}
+
+	if err := proto.Unmarshal(target[len(magicNumber):length-digestLength-int32(len(magicNumber))], aggregated); err != nil {
+		return nil, err
+	}
+
+	return aggregated, nil
 }
