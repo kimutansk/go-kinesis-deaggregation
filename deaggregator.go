@@ -42,9 +42,9 @@ func ExtractRecordDatas(target []byte) ([][]byte, error) {
 	}
 
 	records := aggregated.GetRecords()
-	recordDatas := [][]byte{{}}
+	recordDatas := [][]byte{}
 	for index := 0; index < len(records); index++ {
-		recordDatas[index] = records[index].GetData()
+		recordDatas = append(recordDatas, records[index].GetData())
 	}
 
 	return recordDatas, nil
