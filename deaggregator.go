@@ -8,14 +8,12 @@ import (
 	"github.com/kimutansk/go-kinesis-deaggregation/pb"
 )
 
-const digestLength int32 = 16
-
 var magicNumber = []byte{0xF3, 0x89, 0x9A, 0xC2}
 
 // IsAggregatedRecord judges whether input message is Kinesis Aggregated Record or not.
 func IsAggregatedRecord(target []byte) bool {
 	length := int32(len(target))
-	if length < digestLength {
+	if length < md5.Size {
 		return false
 	}
 
@@ -24,9 +22,10 @@ func IsAggregatedRecord(target []byte) bool {
 	}
 
 	md5Hash := md5.New()
-	checkSum := md5Hash.Sum(target[len(magicNumber) : length-digestLength-int32(len(magicNumber))])
+	md5Hash.Write(target[len(magicNumber) : length-md5.Size])
+	checkSum := md5Hash.Sum(nil)
 
-	if !reflect.DeepEqual(target[length-digestLength:digestLength], checkSum) {
+	if !reflect.DeepEqual(target[length-md5.Size:length], checkSum) {
 		return false
 	}
 
@@ -38,7 +37,7 @@ func ExtractRecordDatas(target []byte) ([][]byte, error) {
 	length := int32(len(target))
 	aggregated := &pb.AggregatedRecord{}
 
-	if err := proto.Unmarshal(target[len(magicNumber):length-digestLength-int32(len(magicNumber))], aggregated); err != nil {
+	if err := proto.Unmarshal(target[len(magicNumber):length-md5.Size], aggregated); err != nil {
 		return nil, err
 	}
 
@@ -56,7 +55,7 @@ func Unmarshal(target []byte) (*pb.AggregatedRecord, error) {
 	length := int32(len(target))
 	aggregated := &pb.AggregatedRecord{}
 
-	if err := proto.Unmarshal(target[len(magicNumber):length-digestLength-int32(len(magicNumber))], aggregated); err != nil {
+	if err := proto.Unmarshal(target[len(magicNumber):length-md5.Size], aggregated); err != nil {
 		return nil, err
 	}
 
