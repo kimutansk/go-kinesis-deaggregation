@@ -1,4 +1,4 @@
-# go-kinesis-deaggregation [![License][license-image]][license-url] [![CircleCI][circleci-image]][circleci-build-status]
+# go-kinesis-deaggregation [![License][license-image]][license-url] [![CircleCI][circleci-image]][circleci-status] [![codecov][codecov-image]][codecov-status]
 
 A deaggregation module for Amazon Kinesis Data Streams's Aggregated Record. 
 This deaggregation module is based on [Aggregation format][aggregation-format].
@@ -47,7 +47,10 @@ MIT
 [license-url]: LICENSE
 
 [circleci-image]: https://circleci.com/gh/kimutansk/go-kinesis-deaggregation/tree/master.svg?style=svg
-[circleci-build-status]: https://circleci.com/gh/kimutansk/go-kinesis-deaggregation
+[circleci-status]: https://circleci.com/gh/kimutansk/go-kinesis-deaggregation
+
+[codecov-image]: https://codecov.io/gh/kimutansk/go-kinesis-deaggregation/branch/master/graph/badge.svg
+[codecov-status]: https://circleci.com/gh/kimutansk/go-kinesis-deaggregation
 
 [aggregation-format]: https://github.com/a8m/kinesis-producer/blob/master/aggregation-format.md
 [kpl-aggregation]: http://docs.aws.amazon.com/kinesis/latest/dev/kinesis-producer-adv-aggregation.html
