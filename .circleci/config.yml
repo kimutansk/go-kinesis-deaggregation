@@ -6,7 +6,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.10.1
-    working_directory: /go/src/github.com/{{ORG_NAME}}/{{REPO_NAME}}
+    working_directory: /go/src/github.com/kimutansk/go-kinesis-aggregation
     steps:
       - checkout
       - run: curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
