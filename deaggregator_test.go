@@ -54,6 +54,56 @@ func Test_IsAggregatedRecord_JudgeFullAggregatedRecord(t *testing.T) {
 	}
 }
 
+func BenchmarkIsAggregatedNon_Short(b *testing.B) {
+	target := "NotAggregatedRecord"
+	targetByteArray := []byte(target)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IsAggregatedRecord(targetByteArray)
+	}
+}
+
+func BenchmarkIsAggregatedNon_Long(b *testing.B) {
+	targetByteArray := []byte("some data")
+	for i := 0; i < 1000; i++ {
+		targetByteArray = append(targetByteArray, []byte(", more data")...)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IsAggregatedRecord(targetByteArray)
+	}
+}
+
+func BenchmarkIsAggregatedMinimum(b *testing.B) {
+	targetRecord := createMinimumAggregateRecordMarshaledBytes()
+	md5Hash := md5.New()
+	md5Hash.Write(targetRecord)
+	checkSum := md5Hash.Sum(nil)
+	targetBytes := append(magicNumber, targetRecord...)
+	targetBytes = append(targetBytes, checkSum...)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IsAggregatedRecord(targetBytes)
+	}
+}
+
+func BenchmarkIsAggregatedFull(b *testing.B) {
+	targetRecord := createFullAggregateRecordMarshaledBytes()
+	md5Hash := md5.New()
+	md5Hash.Write(targetRecord)
+	checkSum := md5Hash.Sum(nil)
+	targetBytes := append(magicNumber, targetRecord...)
+	targetBytes = append(targetBytes, checkSum...)
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IsAggregatedRecord(targetBytes)
+	}
+}
+
 func Test_ExtractRecordDatas_MinimumAggregatedRecord(t *testing.T) {
 	targetRecord := createMinimumAggregateRecordMarshaledBytes()
 

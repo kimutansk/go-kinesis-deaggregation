@@ -1,8 +1,8 @@
 package deaggregation
 
 import (
+	"bytes"
 	"crypto/md5"
-	"reflect"
 
 	"github.com/golang/protobuf/proto"
 	"github.com/kimutansk/go-kinesis-deaggregation/pb"
@@ -17,7 +17,7 @@ func IsAggregatedRecord(target []byte) bool {
 		return false
 	}
 
-	if !reflect.DeepEqual(magicNumber, target[0:len(magicNumber)]) {
+	if !bytes.Equal(magicNumber, target[0:len(magicNumber)]) {
 		return false
 	}
 
@@ -25,7 +25,7 @@ func IsAggregatedRecord(target []byte) bool {
 	md5Hash.Write(target[len(magicNumber) : length-md5.Size])
 	checkSum := md5Hash.Sum(nil)
 
-	if !reflect.DeepEqual(target[length-md5.Size:length], checkSum) {
+	if !bytes.Equal(target[length-md5.Size:length], checkSum) {
 		return false
 	}
 
